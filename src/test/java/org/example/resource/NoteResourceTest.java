@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.Response;
 import io.restassured.internal.http.HttpResponseException;
 import io.vertx.core.json.JsonObject;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.config.HttpClientConfig;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 
 import java.util.UUID;
 import java.util.Arrays;
@@ -18,6 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import jakarta.inject.Inject;
 import io.vertx.mutiny.pgclient.PgPool;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
 
 @QuarkusTest
 public class NoteResourceTest {
@@ -69,7 +76,7 @@ public class NoteResourceTest {
     }
 
     @Test
-    public void testDeleteNote() {
+    public void testDeleteNote() throws Exception {
         UUID id = UUID.randomUUID();
         JsonObject metadata = new JsonObject()
                 .put("tags", Arrays.asList("delete"))
@@ -99,14 +106,14 @@ public class NoteResourceTest {
                 .then()
                 .statusCode(204);
 
-        // Get deleted note - expect 404
-        assertThrows(HttpResponseException.class, () -> {
-            given()
-                .when()
-                .get("/notes/" + id)
-                .then()
-                .statusCode(404);
-        });
+        // Try to delete non-existent note - expect 404
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8081/notes/" + id))
+                .DELETE()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode());
     }
 
     @Test

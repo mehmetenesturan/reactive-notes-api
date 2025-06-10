@@ -45,8 +45,5 @@ nb-configuration.xml
 # TLS Certificates
 .certs/
 
-# Maven wrapper files
-.mvn/
-
 # Log files
 *.log
