@@ -100,11 +100,13 @@ public class NoteResourceTest {
                 .statusCode(204);
 
         // Get deleted note - expect 404
-        given()
+        assertThrows(HttpResponseException.class, () -> {
+            given()
                 .when()
                 .get("/notes/" + id)
                 .then()
                 .statusCode(404);
+        });
     }
 
     @Test

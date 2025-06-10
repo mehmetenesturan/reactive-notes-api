@@ -48,7 +48,13 @@ public class NoteResource {
     @DELETE
     @Path("/{id}")
     public Uni<Response> delete(@PathParam("id") UUID id) {
-        return repository.deleteById(id)
-                .onItem().transform(v -> Response.noContent().build());
+        return repository.findById(id)
+                .onItem().transformToUni(note -> {
+                    if (note == null) {
+                        return Uni.createFrom().item(Response.status(Response.Status.NOT_FOUND).build());
+                    }
+                    return repository.deleteById(id)
+                            .onItem().transform(v -> Response.noContent().build());
+                });
     }
 }
