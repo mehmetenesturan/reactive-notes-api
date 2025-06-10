@@ -34,6 +34,7 @@ public class NoteResourceTest {
 
     @BeforeEach
     public void cleanTable() {
+        // Her test öncesi tabloyu temizle
         client.query("TRUNCATE TABLE notes").execute().await().indefinitely();
     }
 
@@ -52,7 +53,7 @@ public class NoteResourceTest {
         }
         """.formatted(id, metadata.encode());
 
-        // Create note
+        // Not oluştur
         given()
                 .contentType("application/json")
                 .body(jsonBody)
@@ -64,7 +65,7 @@ public class NoteResourceTest {
                 .body("title", is("Test Note"))
                 .body("metadata.color", is("red"));
 
-        // Get note
+        // Notu getir
         given()
                 .when()
                 .get("/notes/" + id)
@@ -90,7 +91,7 @@ public class NoteResourceTest {
         }
         """.formatted(id, metadata.encode());
 
-        // Create note
+        // Not oluştur
         given()
                 .contentType("application/json")
                 .body(jsonBody)
@@ -99,14 +100,14 @@ public class NoteResourceTest {
                 .then()
                 .statusCode(201);
 
-        // Delete note
+        // Notu sil
         given()
                 .when()
                 .delete("/notes/" + id)
                 .then()
                 .statusCode(204);
 
-        // Try to delete non-existent note - expect 404
+        // Var olmayan notu silmeyi dene - 404 bekleniyor
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8081/notes/" + id))
