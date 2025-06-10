@@ -49,7 +49,7 @@ Veritabanını iki şekilde kurabilirsiniz:
 
 ## API Endpointleri
 
-| Metod  | Uç Nokta      | Açıklama           |
+| Metod  | Endpoint      | Açıklama           |
 |--------|--------------|-------------------|
 | POST   | `/notes`     | Yeni not oluştur  |
 | GET    | `/notes/{id}`| ID ile not getir  |
