@@ -82,7 +82,7 @@ public Uni<Note> findById(UUID id) {
 
 ## Geliştirme Adımları
 
-### 1. Quarkus Projesi Oluşturma
+### 1. Quarkus Projesi Oluşturma ve Gerekli Eklentilerin Dahil Edilmesi
 
 `pom.xml` dosyasına aşağıdaki bağımlılıklar eklendi:
 
@@ -103,7 +103,23 @@ public Uni<Note> findById(UUID id) {
 </dependencies>
 ```
 
-### 2. Note Model Sınıfı
+---
+
+### 2. PostgreSQL'de Tablo Oluşturma
+
+`notes.sql` dosyasına şu SQL eklendi:
+
+```sql
+CREATE TABLE IF NOT EXISTS notes (
+    id UUID PRIMARY KEY,
+    title TEXT NOT NULL,
+    metadata JSONB
+);
+```
+
+---
+
+### 3. Note Sınıfının Oluşturulması
 
 ```java
 public class Note {
@@ -114,7 +130,9 @@ public class Note {
 }
 ```
 
-### 3. Repository Katmanı
+---
+
+### 4. Repository Katmanının Oluşturulması
 
 ```java
 @ApplicationScoped
@@ -126,34 +144,58 @@ public class NoteRepository {
 }
 ```
 
-### 4. REST Endpoint'leri
+---
+
+### 5. NoteResource Endpoint'lerinin Oluşturulması
 
 ```java
 @Path("/notes")
 public class NoteResource {
+
     @POST
-    public Uni<Response> create(Note note); //Yeni bir not oluştur.
+    public Uni<Response> create(Note note);
 
     @GET
     @Path("/{id}")
-    public Uni<Response> getById(@PathParam("id") UUID id); //id ile not getir.
+    public Uni<Response> getById(@PathParam("id") UUID id);
 
     @GET
-    public Uni<List<Note>> getAll(); //Tüm notları getir.
+    public Uni<List<Note>> getAll();
 
     @DELETE
     @Path("/{id}")
-    public Uni<Response> delete(@PathParam("id") UUID id); //Notu sil.
+    public Uni<Response> delete(@PathParam("id") UUID id);
 }
 ```
 
-### 5. Veritabanı Yapılandırması
+---
+
+### 6. application.properties Yapılandırması
 
 ```properties
 quarkus.datasource.db-kind=postgresql
 quarkus.datasource.reactive.url=postgresql://localhost:5432/notesdb
 quarkus.datasource.username=postgres
 quarkus.datasource.password=postgres
+```
+
+---
+
+### 7. Unit Testlerin Yazılması
+
+```java
+@QuarkusTest
+public class NoteResourceTest {
+
+    @Test
+    public void testCreateAndGetNote();
+
+    @Test
+    public void testDeleteNote();
+
+    @Test
+    public void testGetAllNotes();
+}
 ```
 
 ## API Endpoint'leri
@@ -208,29 +250,6 @@ quarkus.datasource.password=postgres
    ```bash
    ./mvnw test
    ```
-
-## Geliştirilebilecek Noktalar
-
-1. **Validation**
-   - Giriş verilerinin doğrulanması
-   - Hata mesajlarının iyileştirilmesi
-
-2. **Error Handling**
-   - Özel hata sınıfları
-   - Global exception handling
-
-3. **Pagination**
-   - Sayfalama desteği
-   - Sıralama ve filtreleme
-
-4. **Dokümantasyon**
-   - Swagger/OpenAPI entegrasyonu
-   - API dokümantasyonu
-
-5. **Güvenlik**
-   - Authentication
-   - Authorization
-   - Rate limiting
 
 ## Sorun Giderme
 
