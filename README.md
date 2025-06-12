@@ -265,3 +265,29 @@ public class NoteResourceTest {
      chmod +x mvnw
      ```
 
+---
+
+## Manuel Test
+
+1. Postman uygulamasını açın.  
+2. Yeni bir **Request** oluşturun.  
+3. API endpoint’lerini kullanarak aşağıdaki işlemleri yapabilirsiniz:
+
+| İşlem               | Metod  | URL                                | Açıklama                          |
+| ------------------- | ------ | ---------------------------------- | --------------------------------- |
+| Not oluştur         | POST   | `http://localhost:8080/notes`      | JSON formatında not gönderin      |
+| Not getir           | GET    | `http://localhost:8080/notes/{id}` | Belirtilen ID'ye sahip notu alır  |
+| Tüm notları listele | GET    | `http://localhost:8080/notes`      | Tüm notları listeler              |
+| Not sil             | DELETE | `http://localhost:8080/notes/{id}` | Belirtilen ID'ye sahip notu siler |
+
+4. POST isteği için Body sekmesinde `raw` ve `JSON` formatını seçin ve örnek veri girin:
+
+```json
+{
+  "id": "UUID",
+  "title": "string",,
+  "metadata": {
+    "tags": ["work", "urgent"],
+    "color": "yellow"
+  }
+}
